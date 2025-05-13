@@ -1,0 +1,137 @@
+/*Questão 1.– Escreva uma versão recursiva do algoritmo Merge Sort que ordene um vetor v[incio..f im]
+em ordem decrescente. Sua função deve conter o código da intercalação, considerando que os subvetores v[incio..meio] e v[meio+ 1..f im] já estejam ordenados de forma decrescente. O resultado final
+também deve ser um vetor decrescente.*/
+
+#include <iostream>
+using namespace std;
+
+void intercalarDecrescente(int v[], int inicio, int meio, int fim) {
+    int n1 = meio - inicio + 1;
+    int n2 = fim - meio;
+
+    int esquerda[n1], direita[n2];
+
+    for (int i = 0; i < n1; i++)
+        esquerda[i] = v[inicio + i];
+    for (int j = 0; j < n2; j++)
+        direita[j] = v[meio + 1 + j];
+
+    int i = 0, j = 0, k = inicio;
+
+    while (i < n1 && j < n2) {
+        if (esquerda[i] > direita[j]) {
+            v[k++] = esquerda[i++];
+        } else {
+            v[k++] = direita[j++];
+        }
+    }
+
+    while (i < n1) {
+        v[k++] = esquerda[i++];
+    }
+
+    while (j < n2) {
+        v[k++] = direita[j++];
+    }
+}
+
+void mergeSortDecrescente(int v[], int inicio, int fim) {
+    if (inicio < fim) {
+        int meio = (inicio + fim) / 2;
+        mergeSortDecrescente(v, inicio, meio);
+        mergeSortDecrescente(v, meio + 1, fim);
+        intercalarDecrescente(v, inicio, meio, fim);
+    }
+}
+
+int main() {
+    int v[] = {7, 2, 9, 4, 1, 8};
+    int tamanho = sizeof(v) / sizeof(v[0]);
+
+    mergeSortDecrescente(v, 0, tamanho - 1);
+
+    cout << "Vetor ordenado em ordem decrescente: ";
+    for (int i = 0; i < tamanho; i++)
+        cout << v[i] << " ";
+
+    return 0;
+}
+
+/* Questão 2.– Implemente um programa que utilize a função merge_sort(array) e realize testes experimentais para verificar sua correção. Gere vetores de inteiros aleatórios de vários tamanhos (por
+exemplo, 10, 100, 1000 elementos). Após a ordenação, verifique automaticamente se o vetor está, de
+fato, em ordem crescente. Exiba o resultado de cada teste.*/
+
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+void intercalar(int v[], int inicio, int meio, int fim) {
+    int n1 = meio - inicio + 1;
+    int n2 = fim - meio;
+
+    int esquerda[n1], direita[n2];
+
+    for (int i = 0; i < n1; i++)
+        esquerda[i] = v[inicio + i];
+    for (int j = 0; j < n2; j++)
+        direita[j] = v[meio + 1 + j];
+
+    int i = 0, j = 0, k = inicio;
+
+    while (i < n1 && j < n2) {
+        if (esquerda[i] < direita[j]) {
+            v[k++] = esquerda[i++];
+        } else {
+            v[k++] = direita[j++];
+        }
+    }
+
+    while (i < n1)
+        v[k++] = esquerda[i++];
+    while (j < n2)
+        v[k++] = direita[j++];
+}
+
+void mergeSort(int v[], int inicio, int fim) {
+    if (inicio < fim) {
+        int meio = (inicio + fim) / 2;
+        mergeSort(v, inicio, meio);
+        mergeSort(v, meio + 1, fim);
+        intercalar(v, inicio, meio, fim);
+    }
+}
+
+bool estaOrdenadoCrescente(int v[], int tamanho) {
+    for (int i = 0; i < tamanho - 1; i++) {
+        if (v[i] > v[i + 1]) return false;
+    }
+    return true;
+}
+
+void testarMergeSort() {
+    int tamanhos[] = {10, 100, 1000};
+    srand(time(0));
+
+    for (int t = 0; t < 3; t++) {
+        int tamanho = tamanhos[t];
+        int* vetor = new int[tamanho];
+
+        for (int i = 0; i < tamanho; i++)
+            vetor[i] = rand() % 10000;
+
+        mergeSort(vetor, 0, tamanho - 1);
+
+        cout << "Tamanho: " << tamanho
+             << " - Ordenado: " << (estaOrdenadoCrescente(vetor, tamanho) ? "Sim" : "Não") << endl;
+
+        delete[] vetor;
+    }
+}
+
+int main() {
+    testarMergeSort();
+    return 0;
+}
+
