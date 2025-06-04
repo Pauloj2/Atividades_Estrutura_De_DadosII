@@ -135,3 +135,91 @@ int main() {
     return 0;
 }
 
+
+Quetão 3
+
+/*a) Houve diferença nos resultados?
+→ Pequenas diferenças nas divisões do vetor, mas os resultados finais geralmente continuam corretos.
+
+b) O algoritmo ainda funciona corretamente?
+→ Sim, todas funcionam corretamente desde que a divisão respeite os limites dos índices.
+
+c) Alguma variação provoca falhas?
+→ Em vetores com quantidade ímpar de elementos, a variação (inicio + fim + 1)/2 pode gerar divisões ligeiramente diferentes, mas não falha se os limites forem respeitados.*/
+
+// Original:
+int meio = (inicio + fim) / 2;
+
+// Variação 1:
+int meio = (inicio + fim - 1) / 2;
+
+// Variação 2:
+int meio = (inicio + fim + 1) / 2;
+
+// Quetão 4 
+
+struct Node {
+    int valor;
+    Node* proximo;
+};
+
+Node* merge(Node* a, Node* b) {
+    if (!a) return b;
+    if (!b) return a;
+
+    Node* resultado;
+    if (a->valor < b->valor) {
+        resultado = a;
+        resultado->proximo = merge(a->proximo, b);
+    } else {
+        resultado = b;
+        resultado->proximo = merge(a, b->proximo);
+    }
+    return resultado;
+}
+
+void dividir(Node* origem, Node** frente, Node** tras) {
+    Node* rapida = origem->proximo;
+    Node* lenta = origem;
+
+    while (rapida) {
+        rapida = rapida->proximo;
+        if (rapida) {
+            lenta = lenta->proximo;
+            rapida = rapida->proximo;
+        }
+    }
+
+    *frente = origem;
+    *tras = lenta->proximo;
+    lenta->proximo = nullptr;
+}
+
+void mergeSortLista(Node** cabecaRef) {
+    Node* cabeca = *cabecaRef;
+    if (!cabeca || !cabeca->proximo) return;
+
+    Node *a, *b;
+    dividir(cabeca, &a, &b);
+
+    mergeSortLista(&a);
+    mergeSortLista(&b);
+
+    *cabecaRef = merge(a, b);
+}
+
+Quetão 5 
+
+void mergeSortIterativo(int v[], int n) {
+    int* temp = new int[n];
+    for (int tam = 1; tam < n; tam *= 2) {
+        for (int inicio = 0; inicio < n - tam; inicio += 2 * tam) {
+            int meio = inicio + tam - 1;
+            int fim = min(inicio + 2 * tam - 1, n - 1);
+            intercala(v, inicio, meio, fim);
+        }
+    }
+    delete[] temp;
+}
+
+
