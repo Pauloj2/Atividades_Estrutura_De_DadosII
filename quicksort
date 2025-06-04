@@ -1,0 +1,135 @@
+//Questão 1 
+
+#include <iostream>
+using namespace std;
+
+// Função para trocar dois elementos
+void swap(int &a, int &b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+// Função de partição (modo decrescente)
+int partition(int array[], int inicio, int fim) {
+    int pivo = array[fim];
+    int i = inicio - 1;
+
+    for (int j = inicio; j < fim; j++) {
+        if (array[j] > pivo) { // Maior vai para a esquerda (ordem decrescente)
+            i++;
+            swap(array[i], array[j]);
+        }
+    }
+
+    swap(array[i + 1], array[fim]);
+    return i + 1;
+}
+
+// Quick Sort recursivo decrescente
+void quickSort(int array[], int inicio, int fim) {
+    if (inicio < fim) {
+        int pi = partition(array, inicio, fim);
+        quickSort(array, inicio, pi - 1);
+        quickSort(array, pi + 1, fim);
+    }
+}
+
+// Função principal para teste
+int main() {
+    int array[] = {77, 55, 33, 99};
+    int tamanho = sizeof(array) / sizeof(array[0]);
+
+    quickSort(array, 0, tamanho - 1);
+
+    cout << "Vetor ordenado (decrescente): ";
+    for (int i = 0; i < tamanho; i++)
+        cout << array[i] << " ";
+
+    return 0;
+}
+
+//Questão 2
+
+
+#include <iostream>
+#include <stack>
+#include <ctime>
+using namespace std;
+
+int partition(int arr[], int baixo, int alto) {
+    int pivo = arr[alto];
+    int i = baixo - 1;
+
+    for (int j = baixo; j < alto; j++) {
+        if (arr[j] > pivo) {
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i + 1], arr[alto]);
+    return i + 1;
+}
+
+void quickSortIterativo(int arr[], int baixo, int alto) {
+    stack<int> pilha;
+    pilha.push(baixo);
+    pilha.push(alto);
+
+    while (!pilha.empty()) {
+        alto = pilha.top(); pilha.pop();
+        baixo = pilha.top(); pilha.pop();
+
+        int pi = partition(arr, baixo, alto);
+
+        if (pi - 1 > baixo) {
+            pilha.push(baixo);
+            pilha.push(pi - 1);
+        }
+
+        if (pi + 1 < alto) {
+            pilha.push(pi + 1);
+            pilha.push(alto);
+        }
+    }
+}
+
+
+// Questão 3
+
+/* Condição j + 1 < right não contempla j + 1 == right → isso pode ignorar ordenação de pares.
+/*Para subvetores com 1 ou 2 elementos, pode ocorrer falta de chamada para comparar e ordenar corretamente.
+
+
+// Questão 4
+
+//Está sempre trocando array[i] com array[right] → isso fixa o pivô na mesma posição durante as trocas, comprometendo a separação dos menores/maiores.
+//Não garante que todos à esquerda do pivô são maiores (ou menores).
+
+int partitionCorreta(int array[], int left, int right) {
+    int pivo = array[right];
+    int i = left - 1;
+    for (int j = left; j < right; j++) {
+        if (array[j] > pivo) {
+            i++;
+            swap(array[i], array[j]);
+        }
+    }
+    swap(array[i + 1], array[right]);
+    return i + 1;
+}
+
+//Questão 5
+
+quicksort(array, 1, 6)  
+  quicksort(array, 1, 4) 
+    quicksort(array, 1, 3)
+      quicksort(array, 1, 0)
+      quicksort(array, 2, 3)
+        quicksort(array, 2, 2)
+        quicksort(array, 4, 3)
+    quicksort(array, 5, 4)
+  quicksort(array, 6, 6)
+
+
+
